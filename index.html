@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Mytube Login</title>
+  <style>
+    body {
+      font-family: Arial;
+      background: #0f0f0f;
+      color: white;
+      text-align: center;
+      margin-top: 100px;
+    }
+    input {
+      padding: 10px;
+      margin: 5px;
+      width: 250px;
+      border-radius: 5px;
+      border: none;
+    }
+    button {
+      padding: 10px 20px;
+      margin: 5px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .login-btn { background: red; color: white; }
+    .google-btn { background: white; color: black; }
+  </style>
+</head>
+
+<body>
+
+<h1>🔥 MyTube</h1>
+
+<input type="email" id="email" placeholder="Enter Email"><br>
+<input type="password" id="password" placeholder="Enter Password"><br>
+
+<button class="login-btn" onclick="signup()">Signup</button>
+<button class="login-btn" onclick="login()">Login</button><br>
+
+<button class="google-btn" onclick="googleLogin()">Login with Google</button>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
+import { 
+  getAuth, 
+  createUserWithEmailAndPassword, 
+  signInWithEmailAndPassword,
+  GoogleAuthProvider,
+  signInWithPopup
+} from "https://www.gstatic.com/firebasejs/12.12.1/firebase-auth.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBW35hUxcw9rm-5bGnrobzFarS2qm4J9SM",
+  authDomain: "mytube-e395b.firebaseapp.com",
+  projectId: "mytube-e395b",
+  storageBucket: "mytube-e395b.firebasestorage.app",
+  messagingSenderId: "594520505470",
+  appId: "1:594520505470:web:d6b29e9197725a37962c2f"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+
+window.signup = function() {
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
+
+  createUserWithEmailAndPassword(auth, email, password)
+    .then(() => alert("Signup Success ✅"))
+    .catch(err => alert(err.message));
+}
+
+window.login = function() {
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
+
+  signInWithEmailAndPassword(auth, email, password)
+    .then(() => alert("Login Success 🎉"))
+    .catch(err => alert(err.message));
+}
+
+// 🔥 GOOGLE LOGIN
+window.googleLogin = function() {
+  const provider = new GoogleAuthProvider();
+
+  signInWithPopup(auth, provider)
+    .then(() => alert("Google Login Success 🚀"))
+    .catch(err => alert(err.message));
+}
+</script>
+
+</body>
+</html>
