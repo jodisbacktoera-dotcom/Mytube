@@ -1,31 +1,134 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Watch</title>
-  <link rel="stylesheet" href="style.css">
+  <title>Watch - MyTube</title>
+  <style>
+    body {
+      background: #0f0f0f;
+      color: white;
+      font-family: Arial;
+      text-align: center;
+    }
+    iframe {
+      width: 95%;
+      max-width: 600px;
+      height: 300px;
+      border-radius: 10px;
+      margin-top: 20px;
+    }
+    button {
+      padding: 10px 20px;
+      margin: 10px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .like { background: red; color: white; }
+    input {
+      padding: 10px;
+      width: 80%;
+      margin-top: 10px;
+      border-radius: 5px;
+      border: none;
+    }
+  </style>
 </head>
 
 <body>
 
-<h2 id="title"></h2>
+<h2>🎬 MyTube Player</h2>
 
-<div id="player"></div>
+<iframe id="player" allowfullscreen></iframe>
 
-<button onclick="like()">👍 Like</button>
-<p id="likes"></p>
+<br>
 
-<button onclick="subscribe()">🔔 Subscribe</button>
-<p id="subs"></p>
+<button class="like" onclick="like()">👍 Like</button>
+<p id="likes">Likes: 0</p>
 
 <hr>
 
-<h3>Comments</h3>
-<input id="comment">
-<button onclick="sendComment()">Send</button>
+<h3>💬 Comments</h3>
+<input id="commentInput" placeholder="Write a comment...">
+<br>
+<button onclick="addComment()">Send</button>
 
-<ul id="commentList"></ul>
+<div id="comments"></div>
 
-<script src="app.js"></script>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
+import { 
+  getFirestore, doc, getDoc, setDoc, updateDoc, increment,
+  collection, addDoc, getDocs 
+} from "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js";
+
+// 🔥 Firebase config (same use karna)
+const firebaseConfig = {
+  apiKey: "AIzaSyBW35hUxcw9rm-5bGnrobzFarS2qm4J9SM",
+  authDomain: "mytube-e395b.firebaseapp.com",
+  projectId: "mytube-e395b"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+// 🎥 Video load
+const videoId = localStorage.getItem("videoId");
+document.getElementById("player").src =
+  "https://www.youtube.com/embed/" + videoId;
+
+// 👍 LIKE SYSTEM
+window.like = async () => {
+  const ref = doc(db, "videos", videoId);
+
+  await setDoc(ref, { likes: 0 }, { merge: true });
+  await updateDoc(ref, { likes: increment(1) });
+
+  loadLikes();
+};
+
+async function loadLikes() {
+  const ref = doc(db, "videos", videoId);
+  const snap = await getDoc(ref);
+
+  document.getElementById("likes").innerText =
+    "Likes: " + (snap.data()?.likes || 0);
+}
+
+loadLikes();
+
+// 💬 COMMENT SYSTEM
+window.addComment = async () => {
+  const text = document.getElementById("commentInput").value;
+
+  if (!text) return;
+
+  await addDoc(collection(db, "comments"), {
+    videoId,
+    text
+  });
+
+  document.getElementById("commentInput").value = "";
+  loadComments();
+};
+
+async function loadComments() {
+  const querySnapshot = await getDocs(collection(db, "comments"));
+
+  let html = "";
+
+  querySnapshot.forEach(doc => {
+    const data = doc.data();
+    if (data.videoId === videoId) {
+      html += "<p>💬 " + data.text + "</p>";
+    }
+  });
+
+  document.getElementById("comments").innerHTML = html;
+}
+
+loadComments();
+
+</script>
 
 </body>
 </html>
