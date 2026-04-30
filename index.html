@@ -48,7 +48,8 @@ import {
   createUserWithEmailAndPassword, 
   signInWithEmailAndPassword,
   GoogleAuthProvider,
-  signInWithPopup
+signInWithRedirect,
+getRedirectResult
 } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-auth.js";
 
 const firebaseConfig = {
@@ -84,11 +85,19 @@ window.login = function() {
 // 🔥 GOOGLE LOGIN
 window.googleLogin = function() {
   const provider = new GoogleAuthProvider();
-
-  signInWithPopup(auth, provider)
-    .then(() => alert("Google Login Success 🚀"))
-    .catch(err => alert(err.message));
+  signInWithRedirect(auth, provider);
 }
+import { getRedirectResult } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-auth.js";
+
+getRedirectResult(auth)
+  .then((result) => {
+    if (result) {
+      alert("Google Login Success 🚀");
+    }
+  })
+  .catch((error) => {
+    alert(error.message);
+  });
 </script>
 
 </body>
