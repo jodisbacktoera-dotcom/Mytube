@@ -5,32 +5,32 @@ body {
   font-family: Arial;
 }
 
-header {
+.header {
   display: flex;
   justify-content: space-between;
   padding: 10px;
+  background: #202020;
 }
 
-#videos {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, 250px);
-  gap: 15px;
-  padding: 10px;
+.video {
+  margin: 10px;
 }
 
-.card {
-  background: #1f1f1f;
-  padding: 10px;
-  border-radius: 10px;
-}
-
-iframe {
+.video img {
   width: 100%;
-  height: 150px;
   border-radius: 10px;
 }
 
-input, button {
-  margin: 5px;
-  padding: 8px;
+.title {
+  font-size: 14px;
+}
+
+.nav {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  background: #202020;
+  display: flex;
+  justify-content: space-around;
+  padding: 10px;
 }

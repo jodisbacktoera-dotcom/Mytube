@@ -1,50 +1,73 @@
-// TEMP data (test ke liye)
-let videos = [];
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  GoogleAuthProvider,
+  signInWithRedirect,
+  getRedirectResult,
+  onAuthStateChanged,
+  signOut
+} from "https://www.gstatic.com/firebasejs/12.12.1/firebase-auth.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBW35hUxcw9rm-5bGnrobzFarS2qm4J9SM",
+  authDomain: "mytube-e395b.firebaseapp.com",
+  projectId: "mytube-e395b",
+  storageBucket: "mytube-e395b.firebasestorage.app",
+  messagingSenderId: "594520505470",
+  appId: "1:594520505470:web:d6b29e9197725a37962c2f"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+
+// SIGNUP
+window.signup = () => {
+  const email = document.getElementById("email").value;
+  const pass = document.getElementById("password").value;
+
+  createUserWithEmailAndPassword(auth, email, pass)
+    .then(() => alert("Signup Success ✅"))
+    .catch(e => alert(e.message));
+};
 
 // LOGIN
-function login(){
-  alert("Firebase connect hone ke baad login chalega");
-}
+window.login = () => {
+  const email = document.getElementById("email").value;
+  const pass = document.getElementById("password").value;
 
-// ADD VIDEO
-function addVideo(){
-  let title = document.getElementById("title").value;
-  let link = document.getElementById("link").value;
+  signInWithEmailAndPassword(auth, email, pass)
+    .then(() => {
+      alert("Login Success 🎉");
+      window.location.href = "home.html";
+    })
+    .catch(e => alert(e.message));
+};
 
-  videos.push({ title, link, likes: 0 });
+// GOOGLE LOGIN
+window.googleLogin = () => {
+  const provider = new GoogleAuthProvider();
+  signInWithRedirect(auth, provider);
+};
 
-  loadVideos();
-}
+// REDIRECT RESULT
+getRedirectResult(auth).then((result) => {
+  if (result) {
+    window.location.href = "home.html";
+  }
+});
 
-// LOAD VIDEOS
-function loadVideos(){
-  let html = "";
+// USER CHECK
+onAuthStateChanged(auth, (user) => {
+  if (user && window.location.pathname.includes("index.html")) {
+    window.location.href = "home.html";
+  }
+});
 
-  videos.forEach((v, i) => {
-    html += `
-      <div class="card">
-        <h3>${v.title}</h3>
-        <iframe src="${v.link.replace("watch?v=","embed/")}"></iframe>
-        <br>
-        <a href="video.html?id=${i}">Watch</a>
-      </div>
-    `;
+// LOGOUT
+window.logout = () => {
+  signOut(auth).then(() => {
+    window.location.href = "index.html";
   });
-
-  document.getElementById("videos").innerHTML = html;
-}
-
-// VIDEO PAGE FUNCTIONS
-function like(){
-  alert("Like Firebase ke baad connect hoga");
-}
-
-function subscribe(){
-  alert("Subscribe baad me add hoga");
-}
-
-function sendComment(){
-  alert("Comment system Firebase ke baad");
-}
-
-loadVideos();
+};

@@ -1,112 +1,33 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>MyTube</title>
-<style>
-body { margin:0; font-family:Arial; background:#0f0f0f; color:white; }
-
-.navbar {
-  display:flex;
-  justify-content:space-between;
-  padding:10px;
-  background:#202020;
-}
-
-.sidebar {
-  width:180px;
-  background:#181818;
-  height:100vh;
-  position:fixed;
-  padding:10px;
-}
-
-.content {
-  margin-left:200px;
-  padding:10px;
-}
-
-.video-grid {
-  display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(200px,1fr));
-  gap:15px;
-}
-
-.video img {
-  width:100%;
-  border-radius:10px;
-}
-
-.video { cursor:pointer; }
-.title { font-size:14px; }
-
-</style>
+  <title>Home</title>
+  <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
 
-<div class="navbar">
+<div class="header">
   <h2>🔥 MyTube</h2>
-  <input id="search" placeholder="Search..." style="width:40%;padding:5px">
+  <button onclick="logout()">Logout</button>
 </div>
 
-<div class="sidebar">
-  <p>🏠 Home</p>
-  <p>🔥 Trending</p>
-  <p>📺 Subscriptions</p>
+<div class="video">
+  <img src="https://img.youtube.com/vi/dQw4w9WgXcQ/0.jpg">
+  <div class="title">🔥 Demo Video</div>
 </div>
 
-<div class="content">
-  <div class="video-grid" id="videos"></div>
+<div class="video">
+  <img src="https://img.youtube.com/vi/tgbNymZ7vqY/0.jpg">
+  <div class="title">🔥 Another Video</div>
 </div>
 
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
-import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-auth.js";
+<div class="nav">
+  <a href="home.html">Home</a>
+  <a href="shorts.html">Shorts</a>
+  <a href="channel.html">Channel</a>
+</div>
 
-const app = initializeApp({
-  apiKey: "AIzaSy...",
-  authDomain: "mytube-e395b.firebaseapp.com",
-  projectId: "mytube-e395b"
-});
-
-const auth = getAuth(app);
-
-onAuthStateChanged(auth,(user)=>{
-  if(!user) location.href="index.html";
-});
-
-// 🎥 videos list
-const videos = [
- {id:"dQw4w9WgXcQ", title:"🔥 Trending Music", channel:"MyTube Music"},
- {id:"3JZ_D3ELwOQ", title:"🎵 Hit Song", channel:"Music Pro"},
- {id:"L_jWHffIx5E", title:"😂 Funny Clip", channel:"Comedy Hub"},
-];
-
-const container=document.getElementById("videos");
-
-function show(list){
-  container.innerHTML="";
-  list.forEach(v=>{
-    container.innerHTML+=`
-    <div class="video" onclick="openVideo('${v.id}')">
-      <img src="https://img.youtube.com/vi/${v.id}/0.jpg">
-      <div class="title">${v.title}</div>
-      <small>${v.channel}</small>
-    </div>`;
-  });
-}
-show(videos);
-
-document.getElementById("search").addEventListener("input",(e)=>{
-  const val=e.target.value.toLowerCase();
-  show(videos.filter(v=>v.title.toLowerCase().includes(val)));
-});
-
-window.openVideo=(id)=>{
-  localStorage.setItem("videoId",id);
-  location.href="video.html";
-};
-</script>
+<script type="module" src="app.js"></script>
 
 </body>
 </html>
