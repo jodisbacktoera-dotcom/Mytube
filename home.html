@@ -1,33 +1,26 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Home</title>
-  <link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="style.css">
 </head>
+
 <body>
 
-<div class="header">
-  <h2>🔥 MyTube</h2>
+<div class="topbar">
+  <div class="logo">🔥 MyTube</div>
   <button onclick="logout()">Logout</button>
 </div>
 
-<div class="video">
-  <img src="https://img.youtube.com/vi/dQw4w9WgXcQ/0.jpg">
-  <div class="title">🔥 Demo Video</div>
+<div id="feed"></div>
+
+<div class="bottom">
+  <div onclick="go('home.html')">🏠</div>
+  <div onclick="go('shorts.html')">🎬</div>
+  <div onclick="go('channel.html')">👤</div>
 </div>
 
-<div class="video">
-  <img src="https://img.youtube.com/vi/tgbNymZ7vqY/0.jpg">
-  <div class="title">🔥 Another Video</div>
-</div>
-
-<div class="nav">
-  <a href="home.html">Home</a>
-  <a href="shorts.html">Shorts</a>
-  <a href="channel.html">Channel</a>
-</div>
-
-<script type="module" src="app.js"></script>
+<script src="app.js"></script>
+<script type="module" src="firebase.js"></script>
 
 </body>
 </html>

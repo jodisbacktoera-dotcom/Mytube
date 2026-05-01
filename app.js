@@ -69,5 +69,28 @@ onAuthStateChanged(auth, (user) => {
 window.logout = () => {
   signOut(auth).then(() => {
     window.location.href = "index.html";
-  });
+const videos = [
+  {id:"dQw4w9WgXcQ",title:"🔥 Trending Video"},
+  {id:"3JZ_D3ELwOQ",title:"🎵 Music Video"},
+  {id:"kJQP7kiw5Fk",title:"🔥 Viral Song"}
+];
+
+const feed = document.getElementById("feed");
+
+videos.forEach(v=>{
+  feed.innerHTML += `
+    <div class="video" onclick="openVideo('${v.id}')">
+      <img src="https://img.youtube.com/vi/${v.id}/0.jpg">
+      <p>${v.title}</p>
+    </div>
+  `;
+});
+
+function openVideo(id){
+  location.href="video.html?id="+id;
+}
+
+function go(page){
+  location.href=page;
+}  });
 };

@@ -1,19 +1,15 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <title>Channel</title>
-  <link rel="stylesheet" href="style.css">
-</head>
-<body>
+<body style="background:#0f0f0f;color:white">
 
-<h2>👤 Your Channel</h2>
+<h2>👤 Channel</h2>
 
-<img src="https://via.placeholder.com/100">
-<h3>Satyarth</h3>
+<h3 id="name"></h3>
 
-<p>Subscribers: 0</p>
-
-<button>Edit Channel</button>
+<script>
+document.getElementById("name").innerText =
+localStorage.getItem("user") || "Guest";
+</script>
 
 </body>
 </html>

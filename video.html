@@ -1,95 +1,56 @@
 <!DOCTYPE html>
 <html>
-<body style="background:black;color:white;text-align:center">
+<body style="background:#0f0f0f;color:white">
 
-<h2>🎬 Player</h2>
+<iframe id="player" width="100%" height="250"></iframe>
 
-<iframe id="player" width="90%" height="300"></iframe>
-
-<h3 id="user"></h3>
+<h3 id="title"></h3>
 
 <button onclick="like()">👍 Like</button>
-<button onclick="subscribe()">🔔 Subscribe</button>
+<p id="likes">0 Likes</p>
 
-<p id="likes"></p>
-
-<hr>
-
-<input id="comment" placeholder="Write comment">
+<input id="c" placeholder="comment">
 <button onclick="addComment()">Send</button>
 
 <div id="comments"></div>
 
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
-import {
- getFirestore, doc, getDoc, setDoc, updateDoc, increment,
- collection, addDoc, getDocs
-} from "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js";
+<script>
+const id = new URLSearchParams(location.search).get("id");
 
-import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-auth.js";
+// LOAD VIDEO
+document.getElementById("player").src =
+"https://www.youtube.com/embed/"+id;
 
-const app = initializeApp({
-  apiKey:"AIzaSy...",
-  authDomain:"mytube-e395b.firebaseapp.com",
-  projectId:"mytube-e395b"
-});
+// LOCAL STORAGE SYSTEM
+let likes = localStorage.getItem(id+"_likes") || 0;
+document.getElementById("likes").innerText = likes+" Likes";
 
-const db=getFirestore(app);
-const auth=getAuth(app);
-
-let userEmail="";
-
-onAuthStateChanged(auth,(user)=>{
- if(user){
-  userEmail=user.email;
-  document.getElementById("user").innerText="👤 "+user.email;
- }
-});
-
-const id=localStorage.getItem("videoId");
-document.getElementById("player").src="https://www.youtube.com/embed/"+id;
-
-// 👍 LIKE
-window.like=async()=>{
- const ref=doc(db,"videos",id);
- await setDoc(ref,{likes:0},{merge:true});
- await updateDoc(ref,{likes:increment(1)});
- loadLikes();
-};
-
-async function loadLikes(){
- const snap=await getDoc(doc(db,"videos",id));
- document.getElementById("likes").innerText="Likes: "+(snap.data()?.likes||0);
+// LIKE
+function like(){
+  likes++;
+  localStorage.setItem(id+"_likes", likes);
+  document.getElementById("likes").innerText = likes+" Likes";
 }
-loadLikes();
 
-// 🔔 SUBSCRIBE
-window.subscribe=async()=>{
- await setDoc(doc(db,"subs",userEmail),{sub:true});
- alert("Subscribed 🔔");
-};
+// COMMENT
+function addComment(){
+  let text = document.getElementById("c").value;
 
-// 💬 COMMENTS
-window.addComment=async()=>{
- const text=document.getElementById("comment").value;
- await addDoc(collection(db,"comments"),{id,text,user:userEmail});
- loadComments();
-};
+  let arr = JSON.parse(localStorage.getItem(id+"_comments")||"[]");
+  arr.push(text);
 
-async function loadComments(){
- const q=await getDocs(collection(db,"comments"));
- let html="";
- q.forEach(d=>{
-  const data=d.data();
-  if(data.id===id){
-    html+=`<p><b>${data.user}:</b> ${data.text}</p>`;
-  }
- });
- document.getElementById("comments").innerHTML=html;
+  localStorage.setItem(id+"_comments", JSON.stringify(arr));
+  loadComments();
 }
+
+// LOAD COMMENTS
+function loadComments(){
+  let arr = JSON.parse(localStorage.getItem(id+"_comments")||"[]");
+  document.getElementById("comments").innerHTML =
+    arr.map(c=>"<p>"+c+"</p>").join("");
+}
+
 loadComments();
-
 </script>
 
 </body>
